@@ -16,20 +16,47 @@ object juego {
 
 }
 
-object mario {
+object plazoFijo{
+	var dias = 10
+	method rendimiento(alguien){
+			return alguien.ahorros()*0.02*dias
+		}
+}
+object lebac{
+	method rendimiento(alguien){
+		return (alguien.ahorros()+banco.pesos())/2*0.10
+	}
+}
+object bono{
+	
+	method rendimiento(alguien){
+		return alguien.ahorros()*banco.inflacion()
+  	}
+}
 
+
+object mario {
+    var inversion = plazoFijo
 	var position = game.center()
 	var pesosAhorrados = 0
-
+	method buenAhorrista(){
+		mario.valorFinanciero() > 1000
+	}
+	method valorFinanciero() {
+		return pesosAhorrados+inversion.rendimiento(self)
+	}
 	method levantar(cosa) {
-		position = cosa.position()
 		pesosAhorrados = pesosAhorrados + cosa.valor()
-		game.say(mario, "Junte " + cosa.valor().toString())
+		position = cosa.position()
+		game.say(self, "Junte " + cosa.valor())
 		
+	}
+	method inversion(nueva){
+		inversion = nueva
 	}
 
 	method mostrarAhorros() {
-		game.say(mario, "Junte " + pesosAhorrados + " pesos.")
+		game.say(self, "Junte " + pesosAhorrados + " pesos.")
 	}
 	
 	method ahorros() = pesosAhorrados
@@ -41,7 +68,7 @@ object mario {
 
 object peso {
 
-	var valor = 5
+	const valor = 5
 
 	method valor() {return valor}
 
@@ -52,7 +79,7 @@ object peso {
 
 object unDolar {
 
-	method valor() = banco.cotizacion()
+	method valor() {return banco.cotizacion()}
 
 	method position() {return game.center().left(2)}
 	method image() {return "dolar.png"}
@@ -60,7 +87,7 @@ object unDolar {
 }
 
 object banco {
-
+	var property inflacion = 0.4
 	var cotizacion = 45
 	
 	method cotizacion() {return cotizacion}
@@ -74,7 +101,13 @@ object banco {
 		cotizacion = 45
 		balanza.balancear()
 	}
-
+	method pesos() {
+		return 100*self.cotizacion()
+	}
+//	method inflacion() = inflacion 
+//	method inflacion(nueva){
+//		inflacion = nueva
+//	} 
 }
 
 object flor {
@@ -86,6 +119,13 @@ object flor {
 
 }
 
+object tomate{
+	
+	method image() = "tomate.png"
+	method position() = game.center().left(2).up(2)
+	
+	method valor() = 20
+}
 
 object balanza {
 	const imagenBalanceada ="balanceado.png" 
@@ -103,3 +143,18 @@ object balanza {
 	method image() {return imagen}
 }
 
+object luigi{
+	var inversion = lebac
+	
+	method ahorros() = 10
+	method inversion(nueva){
+		inversion = nueva
+	}
+	method valorFinanciero(){
+		return inversion.rendimiento(self)/2
+	}
+	
+	
+	method image() = "estrella.png"
+	method position() = game.at(1,1)	
+}
